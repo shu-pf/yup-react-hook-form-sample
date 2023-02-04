@@ -2,33 +2,35 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-type SelectEnum = "one" | "two" | "three";
-
 type RequestBody = {
-  select: SelectEnum;
+  number: number;
 };
 
 const schema = yup.object().shape({
-  select: yup
-    .string()
-    .oneOf(["one", "two", "three"] as const)
-    .defined(),
+  number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
 });
 
 interface Schema extends yup.InferType<typeof schema> {}
 
-export default function Select() {
+const initialValues = {
+  number: 10,
+};
+
+export default function EditNumberInput() {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema, { strict: true }),
+    defaultValues: {
+      number: initialValues.number.toString(),
+    },
   });
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
-      select: data.select,
+      number: Number(data.number),
     };
 
     console.log(submitData);
@@ -38,15 +40,8 @@ export default function Select() {
     <>
       <main>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <select {...register("select")} defaultValue="">
-            <option value="" disabled>
-              Please Select
-            </option>
-            <option value="one">One</option>
-            <option value="two">Two</option>
-            <option value="three">Three</option>
-          </select>
-          {errors.select && <p>{errors.select.message}</p>}
+          <input {...register("number")} />
+          {errors.number && <p>{errors.number.message}</p>}
           <button type="submit">Submit</button>
         </form>
       </main>

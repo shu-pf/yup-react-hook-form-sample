@@ -17,21 +17,24 @@ const schema = yup.object().shape({
 
 interface Schema extends yup.InferType<typeof schema> {}
 
-export default function Select() {
+const initialValues = {
+  select: "one" as SelectEnum,
+};
+
+export default function EditSelect() {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema, { strict: true }),
+    defaultValues: {
+      select: initialValues.select,
+    },
   });
 
   const onSubmit = (data: Schema) => {
-    const submitData: RequestBody = {
-      select: data.select,
-    };
-
-    console.log(submitData);
+    console.log(data);
   };
 
   return (

@@ -7,7 +7,7 @@ type SelectEnum = "one" | "two" | "three";
 type RequestBody = {
   text: string;
   number: number;
-  select: SelectEnum;
+  select: SelectEnum | null;
 };
 
 const schema = yup.object().shape({
@@ -15,26 +15,37 @@ const schema = yup.object().shape({
   number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
   select: yup
     .string()
-    .oneOf(["one", "two", "three"] as const)
+    .oneOf(["", "one", "two", "three"] as const)
     .defined(),
 });
 
 interface Schema extends yup.InferType<typeof schema> {}
 
-export default function Form() {
+const initialValues = {
+  text: "text",
+  number: 10,
+  select: null,
+};
+
+export default function EditForm() {
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<Schema>({
     resolver: yupResolver(schema, { strict: true }),
+    defaultValues: {
+      text: initialValues.text,
+      number: initialValues.number.toString(),
+      select: initialValues.select === null ? "" : initialValues.select,
+    },
   });
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
       text: data.text,
       number: Number(data.number),
-      select: data.select,
+      select: data.select === "" ? null : data.select,
     };
 
     console.log(submitData);

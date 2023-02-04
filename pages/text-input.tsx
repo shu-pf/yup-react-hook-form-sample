@@ -6,11 +6,7 @@ type RequestBody = {
   text: string;
 };
 
-interface FormData {
-  text: HTMLInputElement["value"];
-}
-
-const schema: yup.ObjectSchema<RequestBody> = yup.object().shape({
+const schema = yup.object().shape({
   text: yup.string().required("Text is required"),
 });
 
@@ -21,12 +17,16 @@ export default function TextInput() {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<Schema>({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data: Schema) => {
-    console.log(data);
+    const submitData: RequestBody = {
+      text: data.text,
+    };
+
+    console.log(submitData);
   };
 
   return (

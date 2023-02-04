@@ -5,13 +5,13 @@ import * as yup from "yup";
 type SelectEnum = "one" | "two" | "three";
 
 type RequestBody = {
-  select: SelectEnum;
+  select: SelectEnum | null;
 };
 
 const schema = yup.object().shape({
   select: yup
     .string()
-    .oneOf(["one", "two", "three"] as const)
+    .oneOf(["", "one", "two", "three"] as const)
     .defined(),
 });
 
@@ -28,7 +28,7 @@ export default function Select() {
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
-      select: data.select,
+      select: data.select === "" ? null : data.select,
     };
 
     console.log(submitData);

@@ -6,33 +6,32 @@ type RequestBody = {
   number: number;
 };
 
-interface FormData {
-  number: HTMLInputElement["value"];
-}
-
-const schema: yup.ObjectSchema<RequestBody> = yup.object().shape({
-  number: yup.number().required().typeError("Type a number"),
+const schema = yup.object().shape({
+  number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
 });
 
 interface Schema extends yup.InferType<typeof schema> {}
 
-export default function TextInput() {
+export default function NumberInput() {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  } = useForm<Schema>({
+    resolver: yupResolver(schema, { strict: true }),
   });
 
   const onSubmit = (data: Schema) => {
-    console.log(data);
+    const submitData: RequestBody = {
+      number: Number(data.number),
+    };
+
+    console.log(submitData);
   };
 
   return (
     <>
       <main>
-        {/* @ts-ignore c.f. https://github.com/react-hook-form/react-hook-form/issues/9600https://github.com/react-hook-form/react-hook-form/issues/9600 */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <input {...register("number")} />
           {errors.number && <p>{errors.number.message}</p>}
