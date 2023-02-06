@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-type SelectEnum = "one" | "two" | "three";
+type SelectOptions = "one" | "two" | "three";
 
 type RequestBody = {
-  select: SelectEnum | null;
+  select: SelectOptions | null;
 };
 
 const schema = yup.object().shape({

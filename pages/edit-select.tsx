@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-type SelectEnum = "one" | "two" | "three";
+type SelectOptions = "one" | "two" | "three";
 
 type RequestBody = {
-  select: SelectEnum;
+  select: SelectOptions;
 };
 
 const schema = yup.object().shape({
@@ -18,7 +18,7 @@ const schema = yup.object().shape({
 interface Schema extends yup.InferType<typeof schema> {}
 
 const initialValues = {
-  select: "one" as SelectEnum,
+  select: "one" as SelectOptions,
 };
 
 export default function EditSelect() {
