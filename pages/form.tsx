@@ -2,17 +2,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-type SelectEnum = "one" | "two" | "three";
+type SelectOptions = "one" | "two" | "three";
 
 type RequestBody = {
   text: string;
   number: number;
-  select: SelectEnum;
+  select: SelectOptions;
 };
 
 const schema = yup.object().shape({
   text: yup.string().required("Text is required"),
-  number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
+  number: yup.number().typeError("Must be a number").required(),
   select: yup
     .string()
     .oneOf(["one", "two", "three"] as const)
@@ -27,13 +27,13 @@ export default function Form() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
   });
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
       text: data.text,
-      number: Number(data.number),
+      number: data.number,
       select: data.select,
     };
 

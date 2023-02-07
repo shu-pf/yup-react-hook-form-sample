@@ -22,7 +22,7 @@ export default function EditTextInput() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
     defaultValues: {
       text: initialValues.text,
     },

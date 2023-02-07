@@ -18,7 +18,7 @@ export default function TextInput() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
   });
 
   const onSubmit = (data: Schema) => {

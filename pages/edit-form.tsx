@@ -2,20 +2,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-type SelectEnum = "one" | "two" | "three";
+type SelectOptions = "one" | "two" | "three";
 
 type RequestBody = {
   text: string;
   number: number;
-  select: SelectEnum | null;
+  select: SelectOptions | null;
 };
 
 const schema = yup.object().shape({
   text: yup.string().required("Text is required"),
-  number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
+  number: yup.number().typeError("Must be a number").required(),
   select: yup
     .string()
-    .oneOf(["", "one", "two", "three"] as const)
+    .oneOf(["one", "two", "three"] as const)
     .defined(),
 });
 
@@ -24,7 +24,7 @@ interface Schema extends yup.InferType<typeof schema> {}
 const initialValues = {
   text: "text",
   number: 10,
-  select: null,
+  select: "one" as SelectOptions,
 };
 
 export default function EditForm() {
@@ -33,19 +33,19 @@ export default function EditForm() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
     defaultValues: {
       text: initialValues.text,
-      number: initialValues.number.toString(),
-      select: initialValues.select === null ? "" : initialValues.select,
+      number: initialValues.number,
+      select: initialValues.select,
     },
   });
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
       text: data.text,
-      number: Number(data.number),
-      select: data.select === "" ? null : data.select,
+      number: data.number,
+      select: data.select,
     };
 
     console.log(submitData);

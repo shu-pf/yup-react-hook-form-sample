@@ -7,7 +7,7 @@ type RequestBody = {
 };
 
 const schema = yup.object().shape({
-  number: yup.string().matches(/^[0-9]+$/, "Must be only digits"),
+  number: yup.number().typeError("Must be a number").required(),
 });
 
 interface Schema extends yup.InferType<typeof schema> {}
@@ -22,15 +22,15 @@ export default function EditNumberInput() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
     defaultValues: {
-      number: initialValues.number.toString(),
+      number: initialValues.number,
     },
   });
 
   const onSubmit = (data: Schema) => {
     const submitData: RequestBody = {
-      number: Number(data.number),
+      number: data.number,
     };
 
     console.log(submitData);

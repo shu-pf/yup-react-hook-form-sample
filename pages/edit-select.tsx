@@ -27,14 +27,18 @@ export default function EditSelect() {
     register,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema, { strict: true }),
+    resolver: yupResolver(schema),
     defaultValues: {
       select: initialValues.select,
     },
   });
 
   const onSubmit = (data: Schema) => {
-    console.log(data);
+    const submitData: RequestBody = {
+      select: data.select,
+    };
+
+    console.log(submitData);
   };
 
   return (
