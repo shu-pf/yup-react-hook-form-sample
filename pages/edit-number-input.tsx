@@ -7,7 +7,12 @@ type RequestBody = {
 };
 
 const schema = yup.object().shape({
-  number: yup.number().typeError("Must be a number").required(),
+  number: yup
+    .number()
+    .typeError("Must be a number")
+    .positive("Must be a positive number")
+    .integer("Must be an integer")
+    .required("Required"),
 });
 
 interface Schema extends yup.InferType<typeof schema> {}
@@ -40,7 +45,11 @@ export default function EditNumberInput() {
     <>
       <main>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input {...register("number")} />
+          <input
+            {...register("number", {
+              setValueAs: (v) => (v ? parseFloat(v) : undefined),
+            })}
+          />
           {errors.number && <p>{errors.number.message}</p>}
           <button type="submit">Submit</button>
         </form>
